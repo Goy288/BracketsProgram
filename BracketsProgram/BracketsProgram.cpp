@@ -48,46 +48,58 @@ int main() {
             tourneyData.push_back(playerData);
         }
         textFile.close(); //close the file object
-        int numScores = tourneyData.front().scores.size;
-        for (int i = 0; i > numScores; i++) {
+
+        int numScores = tourneyData.front().scores.size();
+
+        string winnerName;
+        string loserName;
+
+        for (auto i = 0; i < numScores; i++) {
             bool isOdd = true;
-            int numPlayers = tourneyData.size();
-            cout << "Game " << (i + 1) << endl;
-            for ( int j = 0; j > numPlayers; j += 1 ) {
+            int numBrackets = tourneyData.size() / 2;
+            cout << "Game " << (i + 1) << ":" << endl;
+
+            for ( auto j = 0; j < numBrackets; j += 1 ) {
                 PlayerData playerOne = tourneyData.at(j);
                 PlayerData playerTwo = tourneyData.at(j + 1);
 
                 int playerOneScore = playerOne.scores.front();
-                int playerTwoScore = playerOne.scores.front();
-
-                string winnerName;
-                string loserName;
+                int playerTwoScore = playerTwo.scores.front();
 
                 int winnerScore;
                 int loserScore;
 
                 bool isPlayerOneLoser = playerOneScore < playerTwoScore;
                 if(isPlayerOneLoser) {
-                    string winnerName = playerTwo.name;
-                    string loserName = playerOne.name;
+                    winnerName = playerTwo.name;
+                    loserName = playerOne.name;
 
-                    int winnerScore = playerTwoScore;
-                    int loserScore = playerOneScore;
+                    winnerScore = playerTwoScore;
+                    loserScore = playerOneScore;
 
-                    playerOne.scores.pop_front();
+                    tourneyData.at(j + 1).scores.pop_front();
+                    tourneyData.erase(tourneyData.begin() + j);
                 }
                 else {
-                    string winnerName = playerOne.name;
-                    string loserName = playerTwo.name;
+                    winnerName = playerOne.name;
+                    loserName = playerTwo.name;
 
-                    int winnerScore = playerOneScore;
-                    int loserScore = playerTwoScore;
+                    winnerScore = playerOneScore;
+                    loserScore = playerTwoScore;
 
-                    playerTwo.scores.pop_front();
+                    tourneyData.at(j).scores.pop_front();
+                    tourneyData.erase(tourneyData.begin() + j + 1);
                 }
-                cout << winnerName << " wins this bracket with 300 points";
+                cout << winnerName << " wins this bracket with "
+                     << winnerScore << " points against "
+                     << loserName << ", who only gained "
+                     << loserScore << " points." << endl;
             }
         }
+        cout << winnerName << " has won $25." << endl
+             << loserName << " has won $10." << endl
+             << "Press enter to exit." << endl;
+        cin.get();
     }
     else {
         cout << "Unable to open file"; //show error message if file cannot load.
